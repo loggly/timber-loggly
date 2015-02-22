@@ -57,4 +57,4 @@ Snapshots of the development version are available in [Sonatype's `snapshots` re
 [2]: https://github.com/JakeWharton/timber
 [3]: https://oss.sonatype.org/content/repositories/snapshots/com/github/tony19/timber-loggly/
 [4]: https://www.loggly.com/docs/customer-token-authentication-token/
-[5]: http://goo.gl/BkpE4B
+[5]: http://goo.gl/Q0WPYU
