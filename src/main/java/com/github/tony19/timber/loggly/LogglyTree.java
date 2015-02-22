@@ -15,7 +15,6 @@
  */
 package com.github.tony19.timber.loggly;
 
-import android.util.Log;
 import com.github.tony19.loggly.LogglyClient;
 import timber.log.Timber;
 
@@ -46,17 +45,17 @@ public class LogglyTree extends Timber.HollowTree {
     public LogglyTree(String token) {
         loggly = new LogglyClient(token);
 
-        // Setup an async callback that logs the result to android.util.Log
+        // Setup an async callback
         // TODO: handle failed messages with N retries
         handler = new LogglyClient.Callback() {
             @Override
             public void success() {
-                Log.d(LogglyTree.class.getSimpleName(), "sent message to Loggly");
+                // XXX: Handle success
             }
 
             @Override
             public void failure(String error) {
-                Log.e(LogglyTree.class.getSimpleName(), "failed: " + error);
+                System.err.println("LogglyTree failed: " + error);
             }
         };
     }
