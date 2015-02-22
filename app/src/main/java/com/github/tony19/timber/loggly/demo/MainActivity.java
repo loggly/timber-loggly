@@ -15,7 +15,7 @@
  */
 package com.github.tony19.timber.loggly.demo;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +29,7 @@ import timber.log.Timber;
  * Sample activity that uses <a href="https://github.com/JakeWharton/timber">Timber</a>
  * to log messages
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
