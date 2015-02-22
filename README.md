@@ -1,27 +1,27 @@
 <h1>timber-loggly <a href='https://tony19.ci.cloudbees.com/job/timber-loggly/'><a href='https://tony19.ci.cloudbees.com/job/timber-loggly/job/timber-loggly-SNAPSHOT/'><img src='https://tony19.ci.cloudbees.com/buildStatus/icon?job=timber-loggly/timber-loggly-SNAPSHOT'></a></a></h1>
 <sup>v1.0.0</sup>
 
-A [Timber][2] tree for posting log messages to [Loggly][1].
+A [Timber][2] tree for asynchronously posting log messages to [Loggly][1].
 
 Usage
 -----
 1. Plant a `LogglyTree` with your [authorization token][4] from Loggly.
  ```java
-import android.app.Application;
-import com.github.tony19.timber.loggly.LogglyTree;
-import timber.log.Timber;
+ import android.app.Application;
+ import com.github.tony19.timber.loggly.LogglyTree;
+ import timber.log.Timber;
 
-public class ExampleApp extends Application {
+ public class ExampleApp extends Application {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+     @Override
+     public void onCreate() {
+         super.onCreate();
 
-        final String LOGGLY_TOKEN = /* your loggly token */;
-        Timber.plant(new LogglyTree(LOGGLY_TOKEN));
-    }
-}
-```
+         final String LOGGLY_TOKEN = /* your loggly token */;
+         Timber.plant(new LogglyTree(LOGGLY_TOKEN));
+     }
+ }
+ ```
 
 2. Use Timber API to log an event via `LogglyTree`...
  ```java
