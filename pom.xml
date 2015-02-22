@@ -10,7 +10,7 @@
 
     <groupId>com.github.tony19</groupId>
     <artifactId>timber-loggly</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>timber-loggly</name>
     <description>A Timber tree that posts to Loggly</description>
 
