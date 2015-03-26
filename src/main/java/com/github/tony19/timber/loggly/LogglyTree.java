@@ -18,6 +18,9 @@ package com.github.tony19.timber.loggly;
 import com.github.tony19.loggly.LogglyClient;
 import timber.log.Timber;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * A <a href="https://github.com/JakeWharton/timber">Timber</a> tree that posts
  * log messages to <a href="http://loggly.com">Loggly</a>
@@ -78,7 +81,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void d(Throwable t, String message, Object... args) {
-        d(message, args);
+        log(Level.DEBUG, message, t, args);
     }
 
     /**
@@ -99,7 +102,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void i(Throwable t, String message, Object... args) {
-        i(message, args);
+        log(Level.INFO, message, t, args);
     }
 
     /**
@@ -120,7 +123,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void e(Throwable t, String message, Object... args) {
-        e(message, args);
+        log(Level.ERROR, message, t, args);
     }
 
     /**
@@ -134,6 +137,43 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
                             level,
                             String.format(message, args).replace("\"", "\\\""));
+    }
+
+    /**
+     * Converts a {@code Throwable} into a string
+     * http://stackoverflow.com/a/4812589/600838
+     * @param t throwable to convert
+     * @return string representation of the throwable
+     */
+    private String formatThrowable(Throwable t) {
+        StringWriter errors = new StringWriter();
+        t.printStackTrace(new PrintWriter(errors));
+        return errors.toString();
+    }
+
+    /**
+     * Gets the JSON representation of a log event
+     * @param level log severity level
+     * @param message message to be logged
+     * @param args message formatting arguments
+     * @return JSON string
+     */
+    private String toJson(Level level, String message, Throwable t, Object... args) {
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
+            level,
+            String.format(message, args).replace("\"", "\\\""),
+            formatThrowable(t));
+    }
+
+    /**
+     * Asynchronously sends a log event to Loggly
+     * @param level log severity level
+     * @param message message to be logged
+     * @param t throwable
+     * @param args message formatting arguments
+     */
+    private void log(Level level, String message, Throwable t, Object... args) {
+        loggly.log(toJson(level, message, t, args), handler);
     }
 
     /**
