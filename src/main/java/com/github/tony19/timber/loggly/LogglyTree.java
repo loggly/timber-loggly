@@ -127,6 +127,27 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     }
 
     /**
+     * Logs a message with {@code WARN} severity
+     * @param message message to be logged
+     * @param args message formatting arguments
+     */
+    @Override
+    public void w(String message, Object... args) {
+        log(Level.WARN, message, args);
+    }
+
+    /**
+     * Logs a message and an associated throwable with {@code WARN} severity
+     * @param t throwable to be logged
+     * @param message message to be logged
+     * @param args message formatting arguments
+     */
+    @Override
+    public void w(Throwable t, String message, Object... args) {
+        log(Level.WARN, message, t, args);
+    }
+
+    /**
      * Gets the JSON representation of a log event
      * @param level log severity level
      * @param message message to be logged
