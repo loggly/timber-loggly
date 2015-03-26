@@ -33,7 +33,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     private LogglyClient.Callback handler;
 
     /** Log severity level */
-    private static enum Level {
+    private enum Level {
         DEBUG,
         INFO,
         WARN,
