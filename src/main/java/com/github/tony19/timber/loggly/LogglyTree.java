@@ -24,7 +24,7 @@ import timber.log.Timber;
  *
  * @author tony19@gmail.com
  */
-public class LogglyTree extends Timber.HollowTree {
+public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
 
     private final LogglyClient loggly;
     private LogglyClient.Callback handler;
@@ -144,5 +144,17 @@ public class LogglyTree extends Timber.HollowTree {
      */
     private void log(Level level, String message, Object... args) {
         loggly.log(toJson(level, message, args), handler);
+    }
+
+    /**
+     * Sets the Loggly tag for all logs going forward. This differs from
+     * the API of {@code Timber.TaggedTree} in that it's not a one-shot
+     * tag.
+     * @param tag desired tag or CSV of multiple tags; use empty string
+     *            to clear tags
+     */
+    @Override
+    public final void tag(String tag) {
+        loggly.setTags(tag);
     }
 }

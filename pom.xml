@@ -53,7 +53,7 @@
         <dependency>
             <groupId>com.github.tony19</groupId>
             <artifactId>loggly-client</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -81,7 +81,7 @@
                     <configuration>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <source>1.5</source>
+                        <source>1.6</source>
                         <target>1.5</target>
                     </configuration>
                 </plugin>
