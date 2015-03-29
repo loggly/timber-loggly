@@ -28,5 +28,5 @@ repositories {
 
 dependencies {
     compile 'com.jakewharton.timber:timber:2.5.1'
-    compile 'com.github.tony19:timber-loggly:1.0.0'
+    compile 'com.github.tony19:timber-loggly:1.0.1'
 }
