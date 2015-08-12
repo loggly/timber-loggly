@@ -56,7 +56,8 @@ public class LogglyTree extends Timber.Tree {
         loggly = new LogglyClient(token);
 
         // TODO: handle failed messages with N retries
-        handler = new LogglyClient.Callback() {@Override
+        handler = new LogglyClient.Callback() {
+            @Override
             public void success() {
 
             }
@@ -246,15 +247,36 @@ public class LogglyTree extends Timber.Tree {
 
     }
 
-
-    private void log(int level, String message, Object... args) {
-        loggly.log(toJson(level, message, args), handler);
-    }
-
+    /**
+     * Asynchronously sends a log event to Loggly
+     * @param level log severity level
+     * @param message message to be logged
+     * @param t throwable
+     * @param args message formatting arguments
+     */
+     
     private void log(int level, String message, Throwable t, Object... args) {
         loggly.log(toJson(level, message, t, args), handler);
     }
 
+    /**
+     * Asynchronously sends a log event to Loggly
+     * @param level log severity level
+     * @param message message to be logged
+     * @param args message formatting arguments
+     */
+     
+    private void log(int level, String message, Object... args) {
+        loggly.log(toJson(level, message, args), handler);
+    }
+
+    /**
+     * Sets the Loggly tag for all logs going forward. This differs from
+     * the API of {@code Timber.TaggedTree} in that it's not a one-shot
+     * tag.
+     * @param tag desired tag or CSV of multiple tags; use empty string
+     *            to clear tags
+     */
     @Override
     protected void log(int level, String tag, String message, Throwable t) {
         // TODO Auto-generated method stub
