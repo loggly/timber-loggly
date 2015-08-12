@@ -24,13 +24,17 @@ import java.io.StringWriter;
 /**
  * A <a href="https://github.com/JakeWharton/timber">Timber</a> tree that posts
  * log messages to <a href="http://loggly.com">Loggly</a>
- *
  * @author tony19@gmail.com
  */
-public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
+public class LogglyTree extends Timber.Tree {
 
     private final LogglyClient loggly;
     private LogglyClient.Callback handler;
+    private String appName;
+    private String[] LEVEL = {
+        "DEBUG", "INFO", "WARN", "ERROR"
+    };
+    private final int DEBUG = 0, INFO = 1, WARN = 2, ERROR = 3;
 
     /** Log severity level */
     private enum Level {
@@ -48,10 +52,44 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     public LogglyTree(String token) {
         loggly = new LogglyClient(token);
 
-        // Setup an async callback
         // TODO: handle failed messages with N retries
         handler = new LogglyClient.Callback() {
             @Override
+            public void success() {
+
+            }
+
+            @Override
+            public void failure(String error) {
+                System.err.println("LogglyTree failed: " + error);
+
+            }
+        };
+    }
+
+    public LogglyTree(String token, String tag) {
+        loggly = new LogglyClient(token, tag);
+        // Setup an async callback
+        // TODO: handle failed messages with N retries
+        handler = new LogglyClient.Callback() {@Override
+            public void success() {
+                // XXX: Handle success
+            }
+
+            @Override
+            public void failure(String error) {
+                System.err.println("LogglyTree failed: " + error);
+            }
+        };
+
+    }
+
+    public LogglyTree(String token, String tag, String appName) {
+        loggly = new LogglyClient(token, tag);
+        this.appName = appName;
+        // Setup an async callback
+        // TODO: handle failed messages with N retries
+        handler = new LogglyClient.Callback() {@Override
             public void success() {
                 // XXX: Handle success
             }
@@ -70,7 +108,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void d(String message, Object... args) {
-        log(Level.DEBUG, message, args);
+        log(DEBUG, message, args);
     }
 
     /**
@@ -81,7 +119,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void d(Throwable t, String message, Object... args) {
-        log(Level.DEBUG, message, t, args);
+        log(DEBUG, message, t, args);
     }
 
     /**
@@ -91,7 +129,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void i(String message, Object... args) {
-        log(Level.INFO, message, args);
+        log(INFO, message, args);
     }
 
     /**
@@ -102,7 +140,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void i(Throwable t, String message, Object... args) {
-        log(Level.INFO, message, t, args);
+        log(INFO, message, t, args);
     }
 
     /**
@@ -112,7 +150,8 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void e(String message, Object... args) {
-        log(Level.ERROR, message, args);
+        log(ERROR, message, args);
+
     }
 
     /**
@@ -123,7 +162,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void e(Throwable t, String message, Object... args) {
-        log(Level.ERROR, message, t, args);
+        log(ERROR, message, t, args);
     }
 
     /**
@@ -133,7 +172,8 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void w(String message, Object... args) {
-        log(Level.WARN, message, args);
+        log(WARN, message, args);
+
     }
 
     /**
@@ -144,7 +184,8 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      */
     @Override
     public void w(Throwable t, String message, Object... args) {
-        log(Level.WARN, message, t, args);
+        log(WARN, message, t, args);
+
     }
 
     /**
@@ -153,11 +194,20 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @param message message to be logged
      * @param args message formatting arguments
      * @return JSON string
+     * 
+     * 
      */
+
+    private String toJson(int level, String message, Object... args) {
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
+        LEVEL[level],
+        String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
+    }
+
     private String toJson(Level level, String message, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
                             level,
-                            String.format(message, args).replace("\"", "\\\""));
+                            String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
     }
 
     /**
@@ -180,10 +230,17 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @return JSON string
      */
     private String toJson(Level level, String message, Throwable t, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\",\"appName\" : \"%4$s\"}",
             level,
             String.format(message, args).replace("\"", "\\\""),
-            formatThrowable(t));
+            formatThrowable(t), String.format(appName).replace("\"", "\\\""));
+    }
+
+    private String toJson(int level, String message, Throwable t, Object... args) {
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\",\"appName\" : \"%4$s\"}",
+            LEVEL[level],
+            String.format(message, args).replace("\"", "\\\""),
+            formatThrowable(t), String.format(appName).replace("\"", "\\\""));
     }
 
     /**
@@ -193,7 +250,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @param t throwable
      * @param args message formatting arguments
      */
-    private void log(Level level, String message, Throwable t, Object... args) {
+    private void log(int level, String message, Throwable t, Object... args) {
         loggly.log(toJson(level, message, t, args), handler);
     }
 
@@ -203,7 +260,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @param message message to be logged
      * @param args message formatting arguments
      */
-    private void log(Level level, String message, Object... args) {
+    private void log(int level, String message, Object... args) {
         loggly.log(toJson(level, message, args), handler);
     }
 
@@ -215,7 +272,8 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      *            to clear tags
      */
     @Override
-    public final void tag(String tag) {
-        loggly.setTags(tag);
+    protected void log(int level, String tag, String message, Throwable t) {
+        // TODO Auto-generated method stub
+        loggly.log(toJson(level, tag, message, t), handler);
     }
 }
