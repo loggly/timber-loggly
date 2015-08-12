@@ -209,8 +209,8 @@ public class LogglyTree extends Timber.Tree {
 
     private String toJson(Level level, String message, Object... args) {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
-        level,
-        String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
+                            level,
+                            String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
     }
 
     /**
