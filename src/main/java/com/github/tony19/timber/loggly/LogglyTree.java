@@ -107,8 +107,9 @@ public class LogglyTree extends Timber.Tree {
      * Logs a message with {@code DEBUG} severity
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void d(String message, Object...args) {
+     */
+    @Override
+    public void d(String message, Object... args) {
         log(DEBUG, message, args);
     }
 
@@ -117,8 +118,9 @@ public class LogglyTree extends Timber.Tree {
      * @param t throwable to be logged
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void d(Throwable t, String message, Object...args) {
+     */
+    @Override
+    public void d(Throwable t, String message, Object... args) {
         log(DEBUG, message, t, args);
     }
 
@@ -126,8 +128,9 @@ public class LogglyTree extends Timber.Tree {
      * Logs a message with {@code INFO} severity
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void i(String message, Object...args) {
+     */
+    @Override
+    public void i(String message, Object... args) {
         log(INFO, message, args);
     }
 
@@ -136,8 +139,9 @@ public class LogglyTree extends Timber.Tree {
      * @param t throwable to be logged
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void i(Throwable t, String message, Object...args) {
+     */
+    @Override
+    public void i(Throwable t, String message, Object... args) {
         log(INFO, message, t, args);
     }
 
@@ -145,8 +149,9 @@ public class LogglyTree extends Timber.Tree {
      * Logs a message with {@code ERROR} severity
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void e(String message, Object...args) {
+     */
+    @Override
+    public void e(String message, Object... args) {
         log(ERROR, message, args);
 
     }
@@ -156,8 +161,9 @@ public class LogglyTree extends Timber.Tree {
      * @param t throwable to be logged
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void e(Throwable t, String message, Object...args) {
+     */
+    @Override
+    public void e(Throwable t, String message, Object... args) {
         log(ERROR, message, t, args);
     }
 
@@ -165,8 +171,9 @@ public class LogglyTree extends Timber.Tree {
      * Logs a message with {@code WARN} severity
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void w(String message, Object...args) {
+     */
+    @Override
+    public void w(String message, Object... args) {
         log(WARN, message, args);
 
     }
@@ -176,8 +183,9 @@ public class LogglyTree extends Timber.Tree {
      * @param t throwable to be logged
      * @param message message to be logged
      * @param args message formatting arguments
-     */@Override
-    public void w(Throwable t, String message, Object...args) {
+     */
+    @Override
+    public void w(Throwable t, String message, Object... args) {
         log(WARN, message, t, args);
 
     }
@@ -192,13 +200,13 @@ public class LogglyTree extends Timber.Tree {
      * 
      */
 
-    private String toJson(int level, String message, Object...args) {
+    private String toJson(int level, String message, Object... args) {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
         LEVEL[level],
         String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
     }
 
-    private String toJson(Level level, String message, Object...args) {
+    private String toJson(Level level, String message, Object... args) {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
         level,
         String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
@@ -223,14 +231,14 @@ public class LogglyTree extends Timber.Tree {
      * @param args message formatting arguments
      * @return JSON string
      */
-    private String toJson(Level level, String message, Throwable t, Object...args) {
+    private String toJson(Level level, String message, Throwable t, Object... args) {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\",\"appName\" : \"%4$s\"}",
         level,
         String.format(message, args).replace("\"", "\\\""),
         formatThrowable(t), String.format(appName).replace("\"", "\\\""));
     }
 
-    private String toJson(int level, String message, Throwable t, Object...args) {
+    private String toJson(int level, String message, Throwable t, Object... args) {
         return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\",\"appName\" : \"%4$s\"}",
         LEVEL[level],
         String.format(message, args).replace("\"", "\\\""),
@@ -239,11 +247,11 @@ public class LogglyTree extends Timber.Tree {
     }
 
 
-    private void log(int level, String message, Object...args) {
+    private void log(int level, String message, Object... args) {
         loggly.log(toJson(level, message, args), handler);
     }
 
-    private void log(int level, String message, Throwable t, Object...args) {
+    private void log(int level, String message, Throwable t, Object... args) {
         loggly.log(toJson(level, message, t, args), handler);
     }
 
