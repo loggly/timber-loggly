@@ -24,13 +24,14 @@ import java.io.StringWriter;
 /**
  * A <a href="https://github.com/JakeWharton/timber">Timber</a> tree that posts
  * log messages to <a href="http://loggly.com">Loggly</a>
- *
  * @author tony19@gmail.com
  */
-public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
+public class LogglyTree extends Timber.Tree {
 
     private final LogglyClient loggly;
     private LogglyClient.Callback handler;
+    private String appName="";
+
 
     /** Log severity level */
     private enum Level {
@@ -52,6 +53,43 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
         // TODO: handle failed messages with N retries
         handler = new LogglyClient.Callback() {
             @Override
+            public void success() {
+
+            }
+
+            @Override
+            public void failure(String error) {
+                System.err.println("LogglyTree failed: " + error);
+
+            }
+        };
+    }
+
+    public LogglyTree(String token, String tag) {
+        loggly = new LogglyClient(token);
+		tag(tag);
+        // Setup an async callback
+        // TODO: handle failed messages with N retries
+        handler = new LogglyClient.Callback() {@Override
+            public void success() {
+                // XXX: Handle success
+            }
+
+            @Override
+            public void failure(String error) {
+                System.err.println("LogglyTree failed: " + error);
+            }
+        };
+
+    }
+
+    public LogglyTree(String token, String tag, String appName) {
+        loggly = new LogglyClient(token);
+		tag(tag);
+        this.appName = appName;
+        // Setup an async callback
+        // TODO: handle failed messages with N retries
+        handler = new LogglyClient.Callback() {@Override
             public void success() {
                 // XXX: Handle success
             }
@@ -113,6 +151,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     @Override
     public void e(String message, Object... args) {
         log(Level.ERROR, message, args);
+
     }
 
     /**
@@ -134,6 +173,7 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     @Override
     public void w(String message, Object... args) {
         log(Level.WARN, message, args);
+
     }
 
     /**
@@ -153,11 +193,14 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @param message message to be logged
      * @param args message formatting arguments
      * @return JSON string
+     * 
+     * 
      */
+
     private String toJson(Level level, String message, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\",\"appName\" : \"%3$s\"}",
                             level,
-                            String.format(message, args).replace("\"", "\\\""));
+                            String.format(message, args).replace("\"", "\\\""), String.format(appName).replace("\"", "\\\""));
     }
 
     /**
@@ -180,11 +223,12 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @return JSON string
      */
     private String toJson(Level level, String message, Throwable t, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
+        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\",\"appName\" : \"%4$s\"}",
             level,
             String.format(message, args).replace("\"", "\\\""),
-            formatThrowable(t));
+            formatThrowable(t), String.format(appName).replace("\"", "\\\""));
     }
+
 
     /**
      * Asynchronously sends a log event to Loggly
@@ -208,13 +252,21 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
     }
 
     /**
-     * Sets the Loggly tag for all logs going forward. This differs from
-     * the API of {@code Timber.TaggedTree} in that it's not a one-shot
-     * tag.
-     * @param tag desired tag or CSV of multiple tags; use empty string
-     *            to clear tags
+     * Sets the Loggly log for all logs going forward. 
+     * @param level log severity level
+     * @param message message to be logged
+     * @param t throwable
      */
     @Override
+    protected void log(int level, String tag, String message, Throwable t) {
+        loggly.log(toJson(Level.values()[level], tag, message, t), handler);
+    }
+    
+    /**
+     * Sets the Loggly tag for all logs going forward.
+     * @param tag desired tag or CSV of multiple tags; use empty string
+     *  	to clear tags
+     */
     public final void tag(String tag) {
         loggly.setTags(tag);
     }
