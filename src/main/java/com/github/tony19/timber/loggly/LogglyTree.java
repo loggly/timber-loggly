@@ -21,6 +21,8 @@ import timber.log.Timber;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import java.util.MissingFormatArgumentException
+
 /**
  * A <a href="https://github.com/JakeWharton/timber">Timber</a> tree that posts
  * log messages to <a href="http://loggly.com">Loggly</a>
