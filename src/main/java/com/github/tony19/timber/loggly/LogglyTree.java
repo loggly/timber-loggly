@@ -155,9 +155,15 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @return JSON string
      */
     private String toJson(Level level, String message, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
-                            level,
-                            String.format(message, args).replace("\"", "\\\""));
+        try {
+            return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
+                                level,
+                                String.format(message, args).replace("\"", "\\\""));
+        } catch(MissingFormatArgumentException exception) {
+            return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\"}",
+                                level,
+                                message.replace("\"", "\\\""));
+        }
     }
 
     /**
@@ -180,10 +186,18 @@ public class LogglyTree extends Timber.HollowTree implements Timber.TaggedTree {
      * @return JSON string
      */
     private String toJson(Level level, String message, Throwable t, Object... args) {
-        return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
-            level,
-            String.format(message, args).replace("\"", "\\\""),
-            formatThrowable(t));
+        try {
+            return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
+                level,
+                String.format(message, args).replace("\"", "\\\""),
+                formatThrowable(t)); 
+        } catch(MissingFormatArgumentException exception) {
+            return String.format("{\"level\": \"%1$s\", \"message\": \"%2$s\", \"exception\": \"%3$s\"}",
+                                level,
+                                message.replace("\"", "\\\""),
+                                formatThrowable(t));
+        }
+ 
     }
 
     /**
