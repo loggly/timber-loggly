@@ -1,4 +1,4 @@
-package com.github.tony19.timber.loggly;
+package com.github.tony19.timber.loggly.example;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
