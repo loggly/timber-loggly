@@ -6,16 +6,33 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3'
+        classpath 'org.ajoberstar:gradle-git:1.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+plugins {
+    id 'net.researchgate.release' version '2.3.4'
+}
+
+apply plugin: 'io.codearte.nexus-staging' // must be in root project
 
 allprojects {
     repositories {
         jcenter()
     }
+}
+
+release {
+    tagTemplate = 'timber-loggly-${version}' // must be single-quotes
+    preTagCommitMessage = ':cloud: Release'
+    tagCommitMessage = ':cloud: Release'
+    newVersionCommitMessage = ':cloud: Bump'
 }
 
 task clean(type: Delete) {
