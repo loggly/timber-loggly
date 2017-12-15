@@ -24,6 +24,7 @@ dependencies {
     testCompile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
     testCompile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
 
+    compile 'com.android.support:support-annotations:23.3.0'
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile ('com.github.tony19:loggly-client:1.0.3') {
         exclude group:'com.jakewharton.timber', module:'timber'
