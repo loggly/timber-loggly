@@ -37,7 +37,7 @@ Download
 #### Gradle
 
 ```
-compile 'com.github.tony19:timber-loggly:1.0.1'
+compile 'com.github.tony19:timber-loggly:1.0.2'
 compile 'com.squareup.retrofit:retrofit:1.9.0'
 ```
 
@@ -47,7 +47,7 @@ compile 'com.squareup.retrofit:retrofit:1.9.0'
 <dependency>
   <groupId>com.github.tony19</groupId>
   <artifactId>timber-loggly</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 <dependency>
   <groupId>com.squareup.retrofit</groupId>
