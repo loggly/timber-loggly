@@ -29,6 +29,14 @@ Usage
  Timber.i("hello world");
  ```
 
+
+##### Limit on WiFi (optional)
+If you want to reduce cellular data traffic you can limit logging only when connected to a WiFi network. If this s the case you need to add the `android.permission.ACCESS_NETWORK_STATE` in your AndroidManifest and Plant the `LogglyTree` with the limit.
+```java
+LogglyTree wifiLimitedLogglyTree = new LogglyTree(LOGGLY_TOKEN).limitWifi(this);
+Timber.plant(wifiLimitedLogglyTree);
+```
+
 Download
 --------
 
